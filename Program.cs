@@ -42,9 +42,10 @@ namespace AlternateLookUp
                     // Now when we run this, we have still about the same speed
                     // But now we use near 0mb allocated, we are just using less than 1mb at the moment we are allocating the string
                     // Fantastic !!!
-                    foreach (var m in Helpers.Words().EnumerateMatches(text))
+                    foreach (var range in text.AsSpan().Split(' '))
                     {
-                        var word = text.AsSpan(m.Index, m.Length);
+                        //var word = text[range];
+                        var word = text.AsSpan(range);
 
                         lookup[word] = lookup.TryGetValue(word, out int count) ? count + 1 : 1;
                     }
@@ -59,8 +60,12 @@ namespace AlternateLookUp
 
         static partial class Helpers
         {
-            [GeneratedRegex(@"\b\w+\b")]
-            public static partial Regex Words();
+            //[GeneratedRegex(@"\b\w+\b")]
+            //public static partial Regex Words();
+
+            // Another Strategy, let's look for whitespace instead of words !
+            [GeneratedRegex(@"\s+")]
+            public static partial Regex Whitespace();
 
             [MethodImpl(MethodImplOptions.NoInlining)]
             public static void Use<T>(T value) { }
